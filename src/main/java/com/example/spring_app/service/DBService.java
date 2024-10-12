@@ -9,9 +9,9 @@ public interface DBService {
 
     Mono<Data> getContent(String contentId);
 
-    Mono<Long> insertContent(Request request);
+    Mono<Boolean> insertContent(Request request);
 
-    Mono<Long> updateContent(String contentId, Request request);
+    Mono<Boolean> updateContent(String contentId, Request request);
 
-    Mono<Long> deleteContent(String contentId);
+    Mono<Boolean> deleteContent(String contentId);
 }

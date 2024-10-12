@@ -9,7 +9,6 @@ WORKDIR /app
 # Copy the packaged JAR file into the container
 COPY *.jar app.jar
 
-# Expose the port that the application will be running on
 EXPOSE 8080
 
 # Set the entry point command to run the application when the container starts

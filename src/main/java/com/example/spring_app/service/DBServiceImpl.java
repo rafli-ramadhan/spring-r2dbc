@@ -31,59 +31,66 @@ public class DBServiceImpl implements DBService {
     public Mono<Data> getContent(String contentId) {
         return repo.getContent(contentId)
                 .flatMap(response -> {
-                    LOG.logTrace("getContent", startTime, contentId, CommonUtil.convertJsonToString(response), HttpStatus.OK);
+                    LOG.logTrace("getContent", startTime, contentId, CommonUtil.convertJsonToString(response),
+                            HttpStatus.OK);
                     return Mono.just(response);
                 });
     }
 
     @Override
-    public Mono<Long> insertContent(Request request) {
+    public Mono<Boolean> insertContent(Request request) {
         Data data = new Data(request.getContentID(), request.getContentMessage(), false, new Date(), null);
 
         return repo.insertContent(data)
                 .flatMap(response -> {
-                    LOG.logTrace("insertContent", startTime, CommonUtil.convertJsonToString(request), CommonUtil.convertJsonToString(response), HttpStatus.OK);
+                    LOG.logTrace("insertContent", startTime, CommonUtil.convertJsonToString(request),
+                            CommonUtil.convertJsonToString(response), HttpStatus.OK);
                     return postgreRepo.insertContent(data)
-                            .flatMap(response2 -> Mono.just(1L));
+                            .flatMap(response2 -> Mono.just(true));
                 })
                 .onErrorResume(ex -> {
-                    LOG.logException("insertContent", startTime, CommonUtil.convertJsonToString(request), CommonUtil.convertJsonToString(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR, ex);
+                    LOG.logException("insertContent", startTime, CommonUtil.convertJsonToString(request),
+                            CommonUtil.convertJsonToString(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR, ex);
                     return postgreRepo.insertContent(data)
-                            .flatMap(response2 -> Mono.error(ex));
+                            .flatMap(response2 -> Mono.just(false));
                 });
     }
 
     @Override
-    public Mono<Long> updateContent(String contentId, Request request) {
+    public Mono<Boolean> updateContent(String contentId, Request request) {
         Data data = new Data(contentId, request.getContentMessage(), false, null, new Date());
 
         return repo.updateContent(data)
                 .flatMap(response -> {
-                    LOG.logTrace("updateContent", startTime, CommonUtil.convertJsonToString(request), CommonUtil.convertJsonToString(response), HttpStatus.OK);
+                    LOG.logTrace("updateContent", startTime, CommonUtil.convertJsonToString(request),
+                            CommonUtil.convertJsonToString(response), HttpStatus.OK);
                     return postgreRepo.updateContent(data)
-                            .flatMap(response2 -> Mono.just(1L));
+                            .flatMap(response2 -> Mono.just(true));
                 })
                 .onErrorResume(ex -> {
-                    LOG.logException("insertContent", startTime, CommonUtil.convertJsonToString(request), CommonUtil.convertJsonToString(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR, ex);
+                    LOG.logException("insertContent", startTime, CommonUtil.convertJsonToString(request),
+                            CommonUtil.convertJsonToString(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR, ex);
                     return postgreRepo.insertContent(data)
-                            .flatMap(response2 -> Mono.error(ex));
+                            .flatMap(response2 -> Mono.just(false));
                 });
     }
 
     @Override
-    public Mono<Long> deleteContent(String contentId) {
+    public Mono<Boolean> deleteContent(String contentId) {
         Data data = new Data(contentId, null, true, null, null);
 
         return repo.deleteContent(data)
                 .flatMap(response -> {
-                    LOG.logTrace("deleteContent", startTime, contentId, CommonUtil.convertJsonToString(response), HttpStatus.OK);
+                    LOG.logTrace("deleteContent", startTime, contentId, CommonUtil.convertJsonToString(response),
+                            HttpStatus.OK);
                     return postgreRepo.deleteContent(data)
-                            .flatMap(response2 -> Mono.just(1L));
+                            .flatMap(response2 -> Mono.just(true));
                 })
                 .onErrorResume(ex -> {
-                    LOG.logException("insertContent", startTime, contentId, CommonUtil.convertJsonToString(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR, ex);
+                    LOG.logException("insertContent", startTime, contentId,
+                            CommonUtil.convertJsonToString(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR, ex);
                     return postgreRepo.insertContent(data)
-                            .flatMap(response2 -> Mono.error(ex));
+                            .flatMap(response2 -> Mono.just(false));
                 });
     }
 

@@ -32,7 +32,7 @@ public class Controller {
 
         return result
                 .flatMap(response -> {
-                    if (!response.getContentMessage().isEmpty()) {
+                    if (response != null) {
                         return Mono.just(
                                 ResponseEntity.status(HttpStatus.OK)
                                         .contentType(MediaType.APPLICATION_JSON)
@@ -48,25 +48,52 @@ public class Controller {
 
     @PostMapping(value = "/v1/content")
     public Mono<ResponseEntity<String>> insertContent(@RequestBody @Valid Request request) {
-        return service.insertContent(request).flatMap(response -> Mono.just(
-                ResponseEntity.status(HttpStatus.OK)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body("Success")));
+        return service.insertContent(request).flatMap(isSuccess -> {
+            if (isSuccess) {
+                return Mono.just(
+                        ResponseEntity.status(HttpStatus.OK)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .body("Success"));
+            } else {
+                return Mono.just(
+                        ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .body("Failed"));
+            }
+        });
     }
 
     @PutMapping(value = "/v1/content/{id}")
     public Mono<ResponseEntity<String>> updateContent(@PathVariable String id, @RequestBody @Valid Request request) {
-        return service.updateContent(id, request).flatMap(response -> Mono.just(
-                ResponseEntity.status(HttpStatus.OK)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body("Success")));
+        return service.updateContent(id, request).flatMap(isSuccess -> {
+            if (isSuccess) {
+                return Mono.just(
+                        ResponseEntity.status(HttpStatus.OK)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .body("Success"));
+            } else {
+                return Mono.just(
+                        ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .body("Failed"));
+            }
+        });
     }
 
     @DeleteMapping(value = "/v1/content/{id}")
     public Mono<ResponseEntity<String>> deleteContent(@PathVariable String id) {
-        return service.deleteContent(id).flatMap(response -> Mono.just(
-                ResponseEntity.status(HttpStatus.OK)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .body("Success")));
+        return service.deleteContent(id).flatMap(isSuccess -> {
+            if (isSuccess) {
+                return Mono.just(
+                        ResponseEntity.status(HttpStatus.OK)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .body("Success"));
+            } else {
+                return Mono.just(
+                        ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .body("Failed"));
+            }
+        });
     }
 }
