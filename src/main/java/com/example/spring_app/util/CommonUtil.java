@@ -9,11 +9,6 @@ import io.r2dbc.spi.ConnectionFactoryOptions;
 import io.r2dbc.spi.Option;
 import lombok.extern.slf4j.Slf4j;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.springframework.boot.autoconfigure.r2dbc.R2dbcProperties;
 import org.springframework.util.StringUtils;
 
