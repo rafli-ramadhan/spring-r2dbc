@@ -13,8 +13,6 @@ CREATE TABLE content (
     PRIMARY KEY (id)
 );
 
-select * from content;
-
 CREATE SEQUENCE content_seq START 1;
 
 CREATE OR REPLACE FUNCTION generate_content_id() RETURNS TRIGGER AS $$
@@ -36,13 +34,11 @@ BEFORE INSERT ON content
 FOR EACH ROW
 EXECUTE FUNCTION generate_content_id();
 
-truncate content;
-
 select * from content;
 
 insert into content(content_id, content_message, is_delete) values ('content-', 'Thank you for your order! Your order #{order_number} has been confirmed and will be shipped on {shipping_date}.', false);
 
-insert into content(content_id, content_message, is_delete, created_date, updated_date) values ('content-2', 'Thank you for your order! Your order #{order_number} has been confirmed and will be shipped on {shipping_date}.', false, NOW(), null);
+insert into content(content_id, content_message, is_delete, created_date, updated_date) values ('content-', 'Thank you for your order! Your order #{order_number} has been confirmed and will be shipped on {shipping_date}.', false, NOW(), null);
 
 
 ```
